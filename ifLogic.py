@@ -1,3 +1,8 @@
+
+# This ended up being harder than I though
+# Buggy code. Trying to fix
+# I think I might be causing a recursive calls somewhere
+
 import random
   
 player_number = 0
@@ -14,10 +19,7 @@ def test():
         test()
        
     else:
-        print("more func num", num)
         player_number = num
-        # play = True
-        print(" test func player numb", player_number)
         return player_number 
 
 
@@ -32,6 +34,7 @@ else:
 while play:
 
     monster_number = random.randint(1, 2)
+    # 5 is hardcoded here for testing purpose
     if player_number == 5:
         print("You won....Get outta here....")
         break
@@ -40,13 +43,10 @@ while play:
         print("No more turns left")
         break
 
-    print(":29 dd", player_number)
     if player_number != 5:
         print("You did not hit the monster.")
-        # if play_again.upper() == "Y":
-        # again = test()
+
         test()
-        # player_number = int(again)
     elif play_again.upper() == "N":
         print("Good bye")
         play = False
@@ -54,9 +54,6 @@ while play:
         print("Inproper input!!")
         play_again = input("Would you like to play again? (Y/N) ")
 
-    # else:
-    #     print("Nums only")
-    #     test()
     count += 1
 
 
