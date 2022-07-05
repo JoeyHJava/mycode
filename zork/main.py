@@ -24,11 +24,8 @@ def showStatus():
   
   if "item" in rooms[currentRoom]:
     for key,value in rooms[currentRoom]['item'].items():
-    #  print(value)
-    #   print(key, sep=' ', end='! ')
       count +=1
       print(f'{count}.{key}')
-      # print(f"You see a {rooms[currentRoom]['item']}")
   print("---------------------------")
 
 def describeRoom():
@@ -40,23 +37,42 @@ def directionsYouCanTravel():
    for dir in a:
     if dir in  rooms[currentRoom]:
       print("You can move " + dir.upper(),sep=' ', end='! ')
-   
-def teleport(current):
-    doTeleport = input("Would you like to teleport to a different room? ")
-    # print("c1 ",current)
-    if doTeleport == 'y':
-        room = input('which room would you like to teleport to? ')
-        # print('first', room)
-        # print("room ", room.lower().capitalize())
-        room = room.lower().title()
-        current = room
-        # print("c2 ", current)
-    # print("c3 ", current)
-    current = rooms[current]
-    print("currentRoom", currentRoom)
-    describeRoom()
-    directionsYouCanTravel()
-    # print('c4 all rooms import', current)
+
+
+def teleport(cur_rm):
+    if cur_rm == 'Garage':
+        teleport = True
+        if teleport == True:
+            doTeleport = input("Would you like to teleport to a different room? ")
+        doTeleport.lower()
+        yes_no = ["y", "n"]
+        if doTeleport in yes_no:
+            if doTeleport == 'y':
+                goToTelePortRoom()
+            elif doTeleport == 'n':
+                cur_rm == 'Garage'
+                teleport = False
+                showStatus()
+                describeRoom()
+                directionsYouCanTravel()
+                # return
+ 
+count = 0
+
+def goToTelePortRoom():
+    global currentRoom
+    global count
+    room = input('which room would you like to teleport to? ')
+    if room in rooms.keys():
+        currentRoom = room 
+        showStatus()
+        describeRoom()
+        directionsYouCanTravel() 
+        count = 0
+    else:
+        count +=1
+        goToTelePortRoom()
+
 
 
 #an inventory, which is initially empty
@@ -71,20 +87,12 @@ while True:
   showStatus()
   describeRoom()  
   directionsYouCanTravel()
-  #get the player's next 'move'
-  #.split() breaks it up into an list array
-  #eg typing 'go east' would give the list:
-  #['go','east']
-
-  if currentRoom == 'Garage':
-    teleport(currentRoom)
+  teleport(currentRoom)
 
   move = ''
   while move == '':
     move = input('>')
-
-  # split allows an items to have a space on them
-  # get golden key is returned ["get", "golden key"]          
+         
   move = move.lower().split(" ", 1)
 
   #if they type 'go' first
@@ -114,8 +122,6 @@ while True:
         if move[1] not in rooms[currentRoom]['item']:
          print('Can\'t get ' + move[1] + '!')
       #tell them they can't get it
-    #  move[1] not in rooms[currentRoom]['item']:
-        # print('Can\'t get ' + move[1] + '!')
       
   ## Define how a player can win
   if currentRoom == 'Garden' and 'key' in inventory and 'potion' in inventory:
