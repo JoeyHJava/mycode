@@ -20,8 +20,15 @@ def showStatus():
   #print the current inventory
   print('Inventory : ' + str(inventory))
   #print an item if there is one
+  count = 0
+  
   if "item" in rooms[currentRoom]:
-    print(f"You see a {rooms[currentRoom]['item']}")
+    for key,value in rooms[currentRoom]['item'].items():
+    #  print(value)
+    #   print(key, sep=' ', end='! ')
+      count +=1
+      print(f'{count}.{key}')
+      # print(f"You see a {rooms[currentRoom]['item']}")
   print("---------------------------")
 
 def describeRoom():
@@ -30,11 +37,26 @@ def describeRoom():
 
 def directionsYouCanTravel():
    a = ["north", "south", "east", "west"]
-   print("you can travel ")
    for dir in a:
     if dir in  rooms[currentRoom]:
-      print("You can travel " + dir.upper(),sep=' ', end='! ')
+      print("You can move " + dir.upper(),sep=' ', end='! ')
    
+def teleport(current):
+    doTeleport = input("Would you like to teleport to a different room? ")
+    # print("c1 ",current)
+    if doTeleport == 'y':
+        room = input('which room would you like to teleport to? ')
+        # print('first', room)
+        # print("room ", room.lower().capitalize())
+        room = room.lower().title()
+        current = room
+        # print("c2 ", current)
+    # print("c3 ", current)
+    current = rooms[current]
+    print("currentRoom", currentRoom)
+    describeRoom()
+    directionsYouCanTravel()
+    # print('c4 all rooms import', current)
 
 
 #an inventory, which is initially empty
@@ -53,6 +75,10 @@ while True:
   #.split() breaks it up into an list array
   #eg typing 'go east' would give the list:
   #['go','east']
+
+  if currentRoom == 'Garage':
+    teleport(currentRoom)
+
   move = ''
   while move == '':
     move = input('>')
@@ -65,7 +91,6 @@ while True:
   if move[0] == 'go':
     #check that they are allowed wherever they want to go
     if move[1] in rooms[currentRoom]:
-      print("in rooms.... ",  rooms[currentRoom])
       #set the current room to the new room
       currentRoom = rooms[currentRoom][move[1]]
     #there is no door (link) to the new room
@@ -78,13 +103,8 @@ while True:
     if "item" in rooms[currentRoom] and move[1] in rooms[currentRoom]['item']:
       #add the item to their inventory
       inventory += [move[1]]
-      print("...THIS GETS DESCRIPTION...",  rooms[currentRoom]['item'][move[1]]['desc'])
       #display a helpful message
-      print(move[1] + ' got!')
-      # print("REMOVE>.......", rooms[currentRoom])
-      # print("REMOVE>.......", rooms[currentRoom]['item'])
-      # print("REMOVE>.......", rooms[currentRoom]['item'].pop(move[1]))
-      # print("REMOVE>.......", rooms[currentRoom]['item'])
+      print(f'{move[1]}! {rooms[currentRoom]["item"][move[1]]} is a {move[1]}! {rooms[currentRoom]["item"][move[1]]["desc"]}')
       rooms[currentRoom]['item'].pop(move[1])
       #delete the item from the room
       if len(rooms[currentRoom]['item']) == 0:
