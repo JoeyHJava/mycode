@@ -47,3 +47,8 @@ rooms = {
                   'description': 'this garage is hella clutter. A monster could be hiding anywhere in here!'
             }
          }
+
+nu = {"a": 1, 'b': 2}
+nu[0]
+for x in nu:
+      print(x)
