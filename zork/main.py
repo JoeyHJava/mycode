@@ -2,7 +2,7 @@
 
 # Replace RPG starter project with this code when new instructions are live
 from room import rooms
-
+import random
 def showInstructions():
   #print a main menu and the commands
   print('''
@@ -20,6 +20,8 @@ def showStatus():
   #print the current inventory
   print('Inventory : ' + str(inventory))
   #print an item if there is one
+  
+  # shows multiple items
   count = 0
   
   if "item" in rooms[currentRoom]:
@@ -28,17 +30,19 @@ def showStatus():
       print(f'{count}.{key}')
   print("---------------------------")
 
+# describes the room
 def describeRoom():
   print( rooms[currentRoom]['description'])
   # print("---------------------------") 
 
+# describes every direction you can go
 def directionsYouCanTravel():
    a = ["north", "south", "east", "west"]
    for dir in a:
     if dir in  rooms[currentRoom]:
-      print("You can move " + dir.upper(),sep=' ', end='! ')
+      print("You can move " + dir.lower(),sep=' ', end='! ')
 
-
+# teleport from Garage to anyroom using prompt. 
 def teleport(cur_rm):
     if cur_rm == 'Garage':
         teleport = True
@@ -57,8 +61,8 @@ def teleport(cur_rm):
                 directionsYouCanTravel()
                 # return
  
+# heavy lifting of teleporting functionality
 count = 0
-
 def goToTelePortRoom():
     global currentRoom
     global count
@@ -72,8 +76,6 @@ def goToTelePortRoom():
     else:
         count +=1
         goToTelePortRoom()
-
-
 
 #an inventory, which is initially empty
 inventory = []
@@ -129,6 +131,21 @@ while True:
     break
 
   ## If a player enters a room with a monster
-  elif 'item' in rooms[currentRoom] and 'monster' in rooms[currentRoom]['item']:
+  elif 'item' in rooms[currentRoom] and 'monster' in rooms[currentRoom]['item'] and 'laptop' not in inventory:
     print('A monster has got you... GAME OVER!')
     break
+
+    # survive encounter with the monster and teleport to random room
+  elif 'item' in rooms[currentRoom] and 'monster' in rooms[currentRoom]['item'] and 'laptop' in inventory:
+    anyRoomButThisRoom = []
+    whichRoom = ""
+    for item in rooms.keys():
+        if currentRoom != item:
+            anyRoomButThisRoom.append(item)
+ 
+    whichRoom = random.choice(anyRoomButThisRoom)
+    print(f"""You encountered a monster, under normal circumstances you would be dead, 
+              however, you have a laptop in your inventory which prevented the monster from getting you! 
+              You will be transported to the {whichRoom} """)
+    currentRoom = whichRoom
+    
