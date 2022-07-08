@@ -18,42 +18,44 @@ app = Flask(__name__)
 
 students = [{
     "name": "one",
-    "age": 21
+    "pass": 21
 }]
 user = "d"
 @app.route("/success")
 def success():
     return f"That is correct!"
 
-@app.route("/",methods=["POST", "GET"]) #index should check for cookies. If cookes present, just send all info, maybe increment, if not, login
+@app.route("/",methods=["POST", "GET"]) 
 def start():
     return render_template("login.html")
-
-
 
 
 @app.route("/login", methods=["POST"])
 def login():
      global user
-     if request.method == "POST":
-        if request.form.get("pass") is not None :
-            user = request.form.get("pass")
-        else:
-            user = "default_user"
+     new_user = {}
+     if request.form.get("pass") == "":
+        return redirect("/")
+     else:
+        if request.method == "POST":
+            # only checking if password is present
+            if request.form.get("pass") is not None :
+                user = request.form.get("pass")
+                new_user["name"] = request.form.get("nm")
+                new_user["pass"] = request.form.get("pass")
+                students.append(new_user)
+            else:
+                user = "default_user"
 
         resp = make_response(render_template("index.html"))
+        # setting cookie
         resp.set_cookie("your_cookie", user)
-        # return jsonify(students)
         return resp
-        # return redirect(url_for("posted"))
 
-@app.route("/body", methods=["POST", "GET"])
+@app.route("/body", methods=[ "GET"])
 def posted():
-    print("GLOBAAAA ", user)
-    print("dfsd", request.cookies.get("your_cookie"))
+    # getting cookie 
     if request.cookies.get("your_cookie")!= "":
-        students[0]['hasCookie'] =  request.cookies.get("your_cookie") != None
-        print("SUTDENT: ", students)
         return jsonify(students)
     else:
         return redirect("/")

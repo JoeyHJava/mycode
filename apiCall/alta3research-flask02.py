@@ -6,13 +6,14 @@ url = "http://127.0.0.1:2224"
 
 age = 22
 new_std = {
-    "name": "two",
-    "age": age 
+    "name": "David",
+    "pass": age 
 }
 
-
 resp = requests.post(url + "/login")
-# pprint("/login on 2: ",resp)
 
-post_rp = requests.post(url + "/body")
-pprint(post_rp)
+post_rp = requests.get(url + "/body")
+
+students =  post_rp.json()
+for student in students:
+    pprint(f"{student['name']} has a cookie.")
