@@ -15,15 +15,22 @@ app = Flask(__name__)
 
 ### NOTE FROM CHAD: There is nothing wrong with the HTML
 
+user = ""
+users = []
 
-students = [{
-    "name": "one",
-    "pass": 21
+moreJson =[ {
+    "name": "Larry",
+    "favorite color": "blue",
+    'number': 1,
+    'bag': ["balls", "rings", "rabbit"]
 }]
-user = "d"
-@app.route("/success")
-def success():
-    return f"That is correct!"
+@app.route("/readable")
+def readable():
+    return jsonify(moreJson)
+
+# @app.route("/success")
+# def success():
+#     return f"That is correct!"
 
 @app.route("/",methods=["POST", "GET"]) 
 def start():
@@ -32,31 +39,34 @@ def start():
 
 @app.route("/login", methods=["POST"])
 def login():
-     global user
+     global users
      new_user = {}
-     if request.form.get("pass") == "":
+     if request.form.get("pw") is None:
         return redirect("/")
      else:
-        if request.method == "POST":
-            # only checking if password is present
-            if request.form.get("pass") is not None :
-                user = request.form.get("pass")
+        if request.method == "POST" and request.form.get("pw") != "":
+            # if pwword is present add to 
+            if request.form.get("pw") != "" :
+                user = request.form.get("pw")
                 new_user["name"] = request.form.get("nm")
-                new_user["pass"] = request.form.get("pass")
-                students.append(new_user)
+                new_user["pw"] = request.form.get("pw")
+                users.append(new_user)
             else:
                 user = "default_user"
 
-        resp = make_response(render_template("index.html"))
-        # setting cookie
-        resp.set_cookie("your_cookie", user)
-        return resp
-
+            resp = make_response(render_template("index.html", message="Cookies were created"))
+            # setting cookie
+            resp.set_cookie("your_cookie", user)
+            return resp
+        else:
+            return redirect("/")
+            
 @app.route("/body", methods=[ "GET"])
 def posted():
     # getting cookie 
     if request.cookies.get("your_cookie")!= "":
-        return jsonify(students)
+
+        return render_template("cookie.html", users=users)
     else:
         return redirect("/")
 
